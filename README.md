@@ -1,10 +1,10 @@
-# Ansible-wowza
+# ansible-wowza
 
 Ansible role to install [Wowza Streaming Engine](https://www.wowza.com/products/streaming-engine) on Linux.
 
 ## Requirements
 
-Requirements are listed in the metadata file.
+Requirements are listed in the role metadata.
 
 ## Role Variables
 
@@ -36,7 +36,7 @@ wowza_install_workdir: "/root"
 
 ## License
 
-BSD
+MIT
 
 ## Author Information
 
