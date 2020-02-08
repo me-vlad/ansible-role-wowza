@@ -26,12 +26,17 @@ wowza_license_key: ""
 wowza_install_workdir: "/root"
 ```
 
+## Ansible Galaxy
+
+ansible-galaxy install me_vlad.wowza
+
+
 ## Example Playbook
 
 ``` yaml
 - hosts: mediaservers
   roles:
-    - serverlabs.wowza
+    - me_vlad.wowza
 ```
 
 ## License
