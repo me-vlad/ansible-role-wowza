@@ -1,0 +1,188 @@
+---
+
+- name: Check that WSE is installed
+  stat:
+    path: /usr/lib/systemd/system/WowzaStreamingEngine.service
+    get_checksum: no
+  register: wse_chkinstall
+
+
+- name: Install Wowza Streaming Engine
+  # BLOCK START
+  block:
+
+    - name: Download Wowza installer
+      get_url:
+        url: "{{ wowza_download_path }}{{ wowza_installer }}"
+        dest: "{{ wowza_install_workdir }}/{{ wowza_installer }}"
+        owner: root
+        group: root
+        mode: '0755'
+        force: no
+        checksum: "{{ wowza_installer_checksum }}"
+      when:
+        - wowza_download_path| length > 0
+        - wowza_installer | length > 0
+        - wowza_installer_checksum | length > 0
+
+    - name: Ensure expect is installed
+      package: name=expect state=installed
+
+    - name: Create expect script on the server
+      template:
+        src: wowza_install_script.exp.j2
+        dest: "{{ wowza_install_workdir }}/wowza_install_script.exp"
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Run expect script for WSE install
+      command:
+        cmd: "{{ wowza_install_workdir }}/wowza_install_script.exp"
+        creates: /usr/local/WowzaStreamingEngine/conf/Server.license
+      register: wowza_expect_output
+      when:
+        - wowza_license_key | length > 0
+        - wowza_user | length > 0
+        - wowza_password | length > 0
+
+    - name: Print a good news (if any)
+      shell: "echo '{{ '='*15 }} {{ red }}Wowza Streaming Engine successfully installed!{{ CSI }}0m {{ '='*15 }}' > /dev/tty"
+      changed_when: no
+      become: no
+      delegate_to: localhost
+      vars:
+        CSI: "\x1B["
+        red: '{{ CSI }}31m'
+      when:
+        - wowza_expect_output.stdout | length > 0
+        - wowza_expect_output.stdout.find("Setup has finished installing Wowza Streaming Engine on your computer.") != -1
+
+    - name: Remove expect script and installer from server
+      file:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ wowza_install_workdir }}/wowza_install_script.exp"
+        - "{{ wowza_install_workdir }}/.bitrock/"
+        - "{{ wowza_install_workdir }}/{{ wowza_installer }}"
+
+    - name: WSE directories permissions hardening
+      shell:
+        cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ -type d -print0 | xargs -0 chmod 755'
+        executable: '/bin/bash'
+
+    - name: WSE files permissions hardening
+      shell:
+        cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ -type f -print0 | xargs -0 chmod o-w'
+        executable: '/bin/bash'
+
+    - name: Disable exec permissions for uninstall binary
+      file:
+        path: /usr/local/WowzaStreamingEngine/uninstall
+        state: file
+        mode: '0400'
+        owner: root
+        group: root
+
+  when: wse_chkinstall.stat.exists is defined and not wse_chkinstall.stat.exists
+  # BLOCK END
+
+
+- name: Create wowza logs directory
+  file:
+    name: "/var/log/wowza"
+    state: directory
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Change default WSE logs path and add XFF field to logs
+  lineinfile:
+    dest: /usr/local/WowzaStreamingEngine/conf/log4j.properties
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+    state: present
+    backup: no
+  loop:
+    - regexp: '^log4j\.appender\.serverAccess\.File='
+      line: 'log4j.appender.serverAccess.File=/var/log/wowza/wowzastreamingengine_access.log'
+    - regexp: '^log4j\.appender\.serverError\.File='
+      line: 'log4j.appender.serverError.File=/var/log/wowza/wowzastreamingengine_error.log'
+    - regexp: '^log4j\.appender\.serverStats\.File='
+      line: 'log4j.appender.serverStats.File=/var/log/wowza/wowzastreamingengine_stats.log'
+    - regexp: '^(log4j\.appender\.serverAccess\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
+      line: "\\1,x-forwarded-ip"
+    - regexp: '^(log4j\.appender\.serverError\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
+      line: "\\1,x-forwarded-ip"
+    - regexp: '^(log4j\.appender\.serverStats\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
+      line: "\\1,x-forwarded-ip"
+  notify: restart wse
+
+- name: Change default WSE MAnager logs path
+  lineinfile:
+    dest: "{{ item.dest }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    backup: no
+  loop:
+    - dest: '/usr/local/WowzaStreamingEngine/manager/conf/tomcat-log4j.properties'
+      regexp: '^1catalina\.org\.apache\.juli\.FileHandler\.directory'
+      line: '1catalina.org.apache.juli.FileHandler.directory = /var/log/wowza'
+    - dest: '/usr/local/WowzaStreamingEngine/manager/conf/log4j.properties'
+      regexp: '^log4j\.appender\.serverAccess\.File='
+      line: 'log4j.appender.serverAccess.File=/var/log/wowza/wmsmanager_access.log'
+    - dest: '/usr/local/WowzaStreamingEngine/manager/conf/log4j.properties'
+      regexp: '^log4j\.appender\.serverError\.File='
+      line: 'log4j.appender.serverError.File=/var/log/wowza/wmsmanager_error.log'
+  notify: restart wse manager
+
+- name: Fix windows CR EOL in WSE log4j configs
+  replace:
+    dest: "{{ item }}"
+    regexp: "\r"
+    backup: no
+  loop:
+    - "/usr/local/WowzaStreamingEngine/conf/log4j.properties"
+    - "/usr/local/WowzaStreamingEngine/manager/conf/log4j.properties"
+
+- name: Check OS init system
+  setup:
+    filter: "ansible_service_mgr"
+  when: ansible_facts['service_mgr'] is not defined
+
+- name: Create directory for systemd drop-in files
+  file:
+    name: /etc/systemd/system/WowzaStreamingEngine.service.d
+    owner: root
+    group: root
+    mode: "0755"
+    state: directory
+  when: ansible_facts['service_mgr'] == "systemd"
+
+- name: Add WSE systemd drop-in file
+  copy:
+    dest: /etc/systemd/system/WowzaStreamingEngine.service.d/99.override.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      # Ansible managed file
+      [Service]
+      LimitNOFILE=65536
+  notify:
+    - 'wowza reload systemd'
+    - 'restart wse'
+  when: ansible_facts['service_mgr'] == "systemd"
+
+- name: Ensure Wowza services running and enabled
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  loop:
+    - "WowzaStreamingEngine"
+    - "WowzaStreamingEngineManager"
+

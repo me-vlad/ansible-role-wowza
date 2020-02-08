@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+
+spawn {{ wowza_install_workdir }}/{{ wowza_installer }} --mode text
+match_max 100000
+
+expect {
+    -exact "Press \[Enter\] to continue:" { send -- "\r"; exp_continue }
+    -ex "Do you accept this agreement? \[y/n\]: "
+}
+send -- "y\r"
+
+expect -exact "License Key: \[\]: "
+send -- "{{ wowza_license_key }}\r"
+
+expect -exact "User Name: \[\]: "
+send -- "{{ wowza_user }}\r"
+
+expect -exact "Password: :"
+send -- "{{ wowza_password }}\r"
+expect -exact "Confirm Password: :"
+send -- "{{ wowza_password }}\r"
+
+expect -exact "Start Wowza Streaming Engine automatically \[Y/n\]: "
+send -- "y\r"
+
+expect -exact "Do you want to continue? \[Y/n\]: "
+send -- "y\r"
+expect eof
