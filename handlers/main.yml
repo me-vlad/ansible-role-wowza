@@ -8,4 +8,3 @@
 
 - name: restart wse manager
   service: name=WowzaStreamingEngineManager state=restarted
-
