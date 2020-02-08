@@ -2,7 +2,7 @@
 
 - name: Check that WSE is installed
   stat:
-    path: /usr/lib/systemd/system/WowzaStreamingEngine.service
+    path: /usr/local/WowzaStreamingEngine/conf/Server.license
     get_checksum: no
   register: wse_chkinstall
 

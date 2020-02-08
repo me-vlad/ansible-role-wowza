@@ -2,6 +2,10 @@
 
 Ansible role to install [Wowza Streaming Engine](https://www.wowza.com/products/streaming-engine) on Linux.
 
+## Idempotence note
+
+Please note: checking for already installed on the server Wowza Streaming Engine realised by determining status of the Wowza license file which installed by default to the /usr/local/WowzaStreamingEngine/conf/Server.license path.
+
 ## Requirements
 
 Requirements are listed in the role metadata.
@@ -46,4 +50,3 @@ MIT
 ## Author Information
 
 Vlad V. Teteria
-
