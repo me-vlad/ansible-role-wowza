@@ -120,7 +120,7 @@
       line: "\\1,x-forwarded-ip"
   notify: restart wse
 
-- name: Change default WSE MAnager logs path
+- name: Change default WSE Manager logs path
   lineinfile:
     dest: "{{ item.dest }}"
     regexp: "{{ item.regexp }}"
