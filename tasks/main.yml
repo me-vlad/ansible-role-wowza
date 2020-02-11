@@ -67,15 +67,10 @@
         - "{{ wowza_install_workdir }}/.bitrock/"
         - "{{ wowza_install_workdir }}/{{ wowza_installer }}"
 
-    - name: WSE directories permissions hardening
+    - name: WSE files and directories permissions hardening
       shell:
-        cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ -type d -print0 | xargs -0 chmod 755'
-        executable: '/bin/bash'
-
-    - name: WSE files permissions hardening
-      shell:
-        cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ -type f -print0 | xargs -0 chmod o-w'
-        executable: '/bin/bash'
+        cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ \( -type d -o -type f \) -print0 | xargs -0 chmod o-w'
+        executable: '/bin/sh'
 
     - name: Disable exec permissions for uninstall binary
       file:
