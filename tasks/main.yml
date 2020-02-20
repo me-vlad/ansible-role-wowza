@@ -2,7 +2,7 @@
 
 - name: Check that WSE is installed
   stat:
-    path: /usr/local/WowzaStreamingEngine/conf/Server.license
+    path: "{{ wowza_license_file }}"
     get_checksum: no
   register: wse_chkinstall
 
@@ -39,7 +39,7 @@
     - name: Run expect script for WSE install
       command:
         cmd: "{{ wowza_install_workdir }}/wowza_install_script.exp"
-        creates: /usr/local/WowzaStreamingEngine/conf/Server.license
+        creates: "{{ wowza_license_file }}"
       register: wowza_expect_output
       when:
         - wowza_license_key | length > 0
@@ -74,7 +74,7 @@
 
     - name: Disable exec permissions for uninstall binary
       file:
-        path: /usr/local/WowzaStreamingEngine/uninstall
+        path: "{{ wowza_directory }}/uninstall"
         state: file
         mode: '0400'
         owner: root
@@ -103,7 +103,7 @@
 
 - name: Change default WSE logs path and add XFF field to logs
   lineinfile:
-    dest: /usr/local/WowzaStreamingEngine/conf/log4j.properties
+    dest: "{{ wowza_config_directory }}/log4j.properties"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     backrefs: yes
@@ -132,13 +132,13 @@
     state: present
     backup: no
   loop:
-    - dest: '/usr/local/WowzaStreamingEngine/manager/conf/tomcat-log4j.properties'
+    - dest: '{{ wowza_manager_counfig_directory }}/tomcat-log4j.properties'
       regexp: '^1catalina\.org\.apache\.juli\.FileHandler\.directory'
       line: '1catalina.org.apache.juli.FileHandler.directory = /var/log/wowza'
-    - dest: '/usr/local/WowzaStreamingEngine/manager/conf/log4j.properties'
+    - dest: '{{ wowza_manager_counfig_directory }}/log4j.properties'
       regexp: '^log4j\.appender\.serverAccess\.File='
       line: 'log4j.appender.serverAccess.File=/var/log/wowza/wmsmanager_access.log'
-    - dest: '/usr/local/WowzaStreamingEngine/manager/conf/log4j.properties'
+    - dest: '{{ wowza_manager_counfig_directory }}/log4j.properties'
       regexp: '^log4j\.appender\.serverError\.File='
       line: 'log4j.appender.serverError.File=/var/log/wowza/wmsmanager_error.log'
   notify: restart wse manager
@@ -149,8 +149,8 @@
     regexp: "\r"
     backup: no
   loop:
-    - "/usr/local/WowzaStreamingEngine/conf/log4j.properties"
-    - "/usr/local/WowzaStreamingEngine/manager/conf/log4j.properties"
+    - "{{ wowza_config_directory }}/log4j.properties"
+    - "{{ wowza_manager_counfig_directory }}/log4j.properties"
 
 - name: Check OS init system
   setup:
@@ -159,7 +159,7 @@
 
 - name: Create directory for systemd drop-in files
   file:
-    name: /etc/systemd/system/WowzaStreamingEngine.service.d
+    name: "{{ wowza_systemd_include_dir }}"
     owner: root
     group: root
     mode: "0755"
@@ -168,7 +168,7 @@
 
 - name: Add WSE systemd drop-in file
   copy:
-    dest: /etc/systemd/system/WowzaStreamingEngine.service.d/99.override.conf
+    dest: "{{ wowza_systemd_include_dir }}/99.override.conf"
     owner: root
     group: root
     mode: "0644"
@@ -179,6 +179,16 @@
   notify:
     - 'wowza reload systemd'
     - 'restart wse'
+  when: ansible_facts['service_mgr'] == "systemd"
+
+- name: Fix WSE systemd service files permissions
+  file:
+    name: "{{ item }}"
+    state: file
+    mode: "0644"
+    owner: root
+    group: root
+  loop: "{{ wowza_systemd_service_files }}"
   when: ansible_facts['service_mgr'] == "systemd"
 
 - name: Ensure Wowza services running and enabled

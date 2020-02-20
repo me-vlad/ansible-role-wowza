@@ -34,10 +34,15 @@ wowza_directory: "/usr/local/WowzaStreamingEngine"
 wowza_config_directory: "{{ wowza_directory }}/conf"
 wowza_manager_directory: "{{ wowza_directory }}/manager"
 wowza_manager_counfig_directory: "{{ wowza_manager_directory }}/conf"
+wowza_license_file: "{{ wowza_config_directory }}/Server.license"
+wowza_systemd_include_dir: "/etc/systemd/system/WowzaStreamingEngine.service.d"
+wowza_systemd_service_files:
+  - "/usr/lib/systemd/system/WowzaStreamingEngine.service"
+  - "/usr/lib/systemd/system/WowzaStreamingEngine.service"
 
 # Wowza Streaming Engine configs with sensitive data
 wowza_secret_configs:
-  - "{{ wowza_config_directory }}/Server.license"
+  - "{{ wowza_license_file }}"
   - "{{ wowza_config_directory }}/admin.password"
   - "{{ wowza_config_directory }}/publish.password"
   - "{{ wowza_config_directory }}/jmxremote.access"
