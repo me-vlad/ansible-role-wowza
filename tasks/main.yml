@@ -72,17 +72,18 @@
         cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ \( -type d -o -type f \) -print0 | xargs -0 chmod o-w'
         executable: '/bin/sh'
 
-    - name: Disable exec permissions for uninstall binary
-      file:
-        path: "{{ wowza_directory }}/uninstall"
-        state: file
-        mode: '0400'
-        owner: root
-        group: root
-
   when: wse_chkinstall.stat.exists is defined and not wse_chkinstall.stat.exists
   # BLOCK END
 
+
+- name: Set read-only permissions for uninstall files
+  file:
+    path: "{{ item }}"
+    state: file
+    mode: '0400'
+    owner: root
+    group: root
+  loop: "{{ wowza_uninstall_files }}"
 
 - name: Fix sensitive config files permissions
   file:
@@ -95,7 +96,7 @@
 
 - name: Create wowza logs directory
   file:
-    name: "/var/log/wowza"
+    name: "{{ wowza_log_directory }}"
     state: directory
     mode: "0700"
     owner: root
@@ -111,11 +112,11 @@
     backup: no
   loop:
     - regexp: '^log4j\.appender\.serverAccess\.File='
-      line: 'log4j.appender.serverAccess.File=/var/log/wowza/wowzastreamingengine_access.log'
+      line: 'log4j.appender.serverAccess.File={{ wowza_log_directory }}/wowzastreamingengine_access.log'
     - regexp: '^log4j\.appender\.serverError\.File='
-      line: 'log4j.appender.serverError.File=/var/log/wowza/wowzastreamingengine_error.log'
+      line: 'log4j.appender.serverError.File={{ wowza_log_directory }}/wowzastreamingengine_error.log'
     - regexp: '^log4j\.appender\.serverStats\.File='
-      line: 'log4j.appender.serverStats.File=/var/log/wowza/wowzastreamingengine_stats.log'
+      line: 'log4j.appender.serverStats.File={{ wowza_log_directory }}/wowzastreamingengine_stats.log'
     - regexp: '^(log4j\.appender\.serverAccess\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
       line: "\\1,x-forwarded-ip"
     - regexp: '^(log4j\.appender\.serverError\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
@@ -134,13 +135,13 @@
   loop:
     - dest: '{{ wowza_manager_counfig_directory }}/tomcat-log4j.properties'
       regexp: '^1catalina\.org\.apache\.juli\.FileHandler\.directory'
-      line: '1catalina.org.apache.juli.FileHandler.directory = /var/log/wowza'
+      line: '1catalina.org.apache.juli.FileHandler.directory = {{ wowza_log_directory }}'
     - dest: '{{ wowza_manager_counfig_directory }}/log4j.properties'
       regexp: '^log4j\.appender\.serverAccess\.File='
-      line: 'log4j.appender.serverAccess.File=/var/log/wowza/wmsmanager_access.log'
+      line: 'log4j.appender.serverAccess.File={{ wowza_log_directory }}/wmsmanager_access.log'
     - dest: '{{ wowza_manager_counfig_directory }}/log4j.properties'
       regexp: '^log4j\.appender\.serverError\.File='
-      line: 'log4j.appender.serverError.File=/var/log/wowza/wmsmanager_error.log'
+      line: 'log4j.appender.serverError.File={{ wowza_log_directory }}/wmsmanager_error.log'
   notify: restart wse manager
 
 - name: Fix windows CR EOL in WSE log4j configs
