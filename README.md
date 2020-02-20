@@ -28,6 +28,20 @@ wowza_license_key: ""
 
 # Must be located on the file system with exec mount option!!!
 wowza_install_workdir: "/root"
+
+# Wowza Streaming Engine default path variables
+wowza_directory: "/usr/local/WowzaStreamingEngine"
+wowza_config_directory: "{{ wowza_directory }}/conf"
+wowza_manager_directory: "{{ wowza_directory }}/manager"
+wowza_manager_counfig_directory: "{{ wowza_manager_directory }}/conf"
+
+# Wowza Streaming Engine configs with sensitive data
+wowza_secret_configs:
+  - "{{ wowza_config_directory }}/Server.license"
+  - "{{ wowza_config_directory }}/admin.password"
+  - "{{ wowza_config_directory }}/publish.password"
+  - "{{ wowza_config_directory }}/jmxremote.access"
+  - "{{ wowza_config_directory }}/jmxremote.password"
 ```
 
 ## Ansible Galaxy
