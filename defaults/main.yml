@@ -1,8 +1,8 @@
 ---
 
-wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-4-7-8/"
-wowza_installer: "WowzaStreamingEngine-4.7.8-linux-x64-installer.run"
-wowza_installer_checksum: "sha1:8088072198a5dec188b34fcdac375f7a39a29028"
+wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-4-8-0/"
+wowza_installer: "WowzaStreamingEngine-4.8.0-linux-x64-installer.run"
+wowza_installer_checksum: "sha1:09a0f7d6ae3f420e001ea2195f75dd1e5cd6d44a"
 
 # Wowza admin user
 wowza_user: ""
