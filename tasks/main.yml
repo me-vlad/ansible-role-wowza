@@ -94,6 +94,14 @@
     group: root
   loop: "{{ wowza_secret_configs }}"
 
+- name: Fix WSE config directory permissions
+  file:
+    name: "{{ wowza_config_directory }}"
+    state: directory
+    mode: "0750"
+    owner: root
+    group: root
+
 - name: Create wowza logs directory
   file:
     name: "{{ wowza_log_directory }}"
