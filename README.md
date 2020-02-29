@@ -51,6 +51,7 @@ wowza_secret_configs:
   - "{{ wowza_config_directory }}/publish.password"
   - "{{ wowza_config_directory }}/jmxremote.access"
   - "{{ wowza_config_directory }}/jmxremote.password"
+  - "{{ wowza_config_directory }}/MediaCache.xml"
 ```
 
 ## Ansible Galaxy
