@@ -30,15 +30,15 @@
 
     - name: Create expect script on the server
       template:
-        src: wowza_install_script.exp.j2
-        dest: "{{ wowza_install_workdir }}/wowza_install_script.exp"
+        src: "{{ wowza_install_script }}.j2"
+        dest: "{{ wowza_install_workdir }}/{{ wowza_install_script }}"
         owner: root
         group: root
         mode: "0700"
 
     - name: Run expect script for WSE install
       command:
-        cmd: "{{ wowza_install_workdir }}/wowza_install_script.exp"
+        cmd: "{{ wowza_install_workdir }}/{{ wowza_install_script }}"
         creates: "{{ wowza_license_file }}"
       register: wowza_expect_output
       when:
@@ -63,9 +63,9 @@
         name: "{{ item }}"
         state: absent
       loop:
-        - "{{ wowza_install_workdir }}/wowza_install_script.exp"
-        - "{{ wowza_install_workdir }}/.bitrock/"
+        - "{{ wowza_install_workdir }}/{{ wowza_install_script }}"
         - "{{ wowza_install_workdir }}/{{ wowza_installer }}"
+        - "{{ wowza_install_workdir }}/.bitrock/"
 
     - name: WSE files and directories permissions hardening
       shell:
@@ -92,7 +92,7 @@
     mode: "0640"
     owner: root
     group: root
-  loop: "{{ wowza_secret_configs }}"
+  loop: "{{ wowza_config_secret_files }}"
 
 - name: Fix WSE config directory permissions
   file:
@@ -112,7 +112,7 @@
 
 - name: Change default WSE logs path and add XFF field to logs
   lineinfile:
-    dest: "{{ wowza_config_directory }}/log4j.properties"
+    dest: "{{ wowza_config_log4j }}"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     backrefs: yes
@@ -131,7 +131,7 @@
       line: "\\1,x-forwarded-ip"
     - regexp: '^(log4j\.appender\.serverStats\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
       line: "\\1,x-forwarded-ip"
-  notify: restart wse
+  notify: wowza restart wse
 
 - name: Change default WSE Manager logs path
   lineinfile:
@@ -141,25 +141,23 @@
     state: present
     backup: no
   loop:
-    - dest: '{{ wowza_manager_counfig_directory }}/tomcat-log4j.properties'
+    - dest: '{{ wowza_manager_config_tomcat_log4j }}'
       regexp: '^1catalina\.org\.apache\.juli\.FileHandler\.directory'
       line: '1catalina.org.apache.juli.FileHandler.directory = {{ wowza_log_directory }}'
-    - dest: '{{ wowza_manager_counfig_directory }}/log4j.properties'
+    - dest: '{{ wowza_manager_config_log4j }}'
       regexp: '^log4j\.appender\.serverAccess\.File='
       line: 'log4j.appender.serverAccess.File={{ wowza_log_directory }}/wmsmanager_access.log'
-    - dest: '{{ wowza_manager_counfig_directory }}/log4j.properties'
+    - dest: '{{ wowza_manager_config_log4j }}'
       regexp: '^log4j\.appender\.serverError\.File='
       line: 'log4j.appender.serverError.File={{ wowza_log_directory }}/wmsmanager_error.log'
-  notify: restart wse manager
+  notify: wowza restart wse manager
 
-- name: Fix windows CR EOL in WSE log4j configs
+- name: Fix windows CR EOL in WSE configs
   replace:
     dest: "{{ item }}"
     regexp: "\r"
     backup: no
-  loop:
-    - "{{ wowza_config_directory }}/log4j.properties"
-    - "{{ wowza_manager_counfig_directory }}/log4j.properties"
+  loop: "{{ wowza_config_files }}"
 
 - name: Check OS init system
   setup:
@@ -173,7 +171,7 @@
     group: root
     mode: "0755"
     state: directory
-  when: ansible_facts['service_mgr'] == "systemd"
+  when: ansible_facts['service_mgr'] == 'systemd'
 
 - name: Add WSE systemd drop-in file
   copy:
@@ -187,8 +185,8 @@
       LimitNOFILE=65536
   notify:
     - 'wowza reload systemd'
-    - 'restart wse'
-  when: ansible_facts['service_mgr'] == "systemd"
+    - 'wowza restart wse'
+  when: ansible_facts['service_mgr'] == 'systemd'
 
 - name: Fix WSE systemd service files permissions
   file:
@@ -198,7 +196,23 @@
     owner: root
     group: root
   loop: "{{ wowza_systemd_service_files }}"
-  when: ansible_facts['service_mgr'] == "systemd"
+  when: ansible_facts['service_mgr'] == 'systemd'
+
+- name: Configure WSE java heap size (tuning)
+  lineinfile:
+    path: "{{ wowza_config_tune }}"
+    regexp: '^.*<HeapSize>.*</HeapSize>'
+    line: "\t\t<HeapSize>{{ wowza_java_heapsize }}</HeapSize>"
+    insertbefore: "^.*</Tune>"
+    state: present
+    backup: no
+  vars:
+    wowza_java_heapsize: "{% if wowza_tuning_heapsize is in ['Production', 'Development'] -%}
+                          ${com.wowza.wms.TuningHeapSize{{ wowza_tuning_heapsize }}}
+                          {%- elif wowza_tuning_heapsize | regex_search('^\\d+M$') %}{{ wowza_tuning_heapsize }}{% endif %}"
+  when:
+    - wowza_tuning_heapsize is defined
+    - wowza_java_heapsize is defined and wowza_java_heapsize | length > 0
 
 - name: Ensure Wowza services running and enabled
   service:
