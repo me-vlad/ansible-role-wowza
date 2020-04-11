@@ -21,7 +21,7 @@
         force: no
         checksum: "{{ wowza_installer_checksum }}"
       when:
-        - wowza_download_path| length > 0
+        - wowza_download_path | length > 0
         - wowza_installer | length > 0
         - wowza_installer_checksum | length > 0
 
@@ -210,9 +210,56 @@
     wowza_java_heapsize: "{% if wowza_tuning_heapsize is in ['Production', 'Development'] -%}
                           ${com.wowza.wms.TuningHeapSize{{ wowza_tuning_heapsize }}}
                           {%- elif wowza_tuning_heapsize | regex_search('^\\d+M$') %}{{ wowza_tuning_heapsize }}{% endif %}"
+  notify: wowza restart wse
   when:
     - wowza_tuning_heapsize is defined
     - wowza_java_heapsize is defined and wowza_java_heapsize | length > 0
+
+- name: Create Server.xml config
+  template:
+    src: Server.xml.j2
+    dest: "{{ wowza_config_server }}"
+    mode: '0644'
+    owner: root
+    group: root
+  notify: wowza restart wse
+  when:
+    - wowza_rest_enable is defined and wowza_rest_enable != none
+    - wowza_rest_docs_enable is defined
+    - wowza_jmx_enable is defined
+
+- name: Create VHost.xml config
+  template:
+    src: VHost.xml.j2
+    dest: "{{ wowza_config_vhost }}"
+    mode: '0644'
+    owner: root
+    group: root
+  notify: wowza restart wse
+
+- name: Add Wowza Modules
+  unarchive:
+    src: "{{ wowza_modules_collection_url + '/' + lookup('vars', wowza_module) }}"
+    dest: "{{ wowza_directory }}"
+    exclude:
+      - lib/
+      - LICENSE.txt
+      - version.txt
+    remote_src: yes
+    mode: '0644'
+    owner: root
+    group: root
+  loop:
+    - wowza_modules_streampublisher
+    - wowza_modules_dvrrecordercontrol
+    - wowza_modules_packetizercontrol
+    - wowza_modules_transcodercontrol
+  loop_control:
+    loop_var: wowza_module
+  notify: wowza restart wse
+  when:
+    - lookup('vars', wowza_module + '_enable') is defined
+    - lookup('vars', wowza_module + '_enable') | bool
 
 - name: Ensure Wowza services running and enabled
   service:
