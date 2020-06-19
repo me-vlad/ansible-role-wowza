@@ -7,7 +7,7 @@
 			<Enable>{{ wowza_rest_enable | bool | lower }}</Enable>
 			<IPAddress>{{ wowza_rest_ip | default('*', true) }}</IPAddress>
 			<Port>{{ wowza_rest_port | default('8087', true) }}</Port>
-			<!-- none, basic, digest, remotehttp, digestfile -->
+			<!-- digest, remotehttp, digestfile -->
 			<AuthenticationMethod>{{ wowza_rest_auth_method | default('digest', true) }}</AuthenticationMethod>
 			<DiagnosticURLEnable>true</DiagnosticURLEnable>
 			<SSLConfig>
@@ -25,7 +25,7 @@
 			<EnableXMLFile>false</EnableXMLFile>
 			<DocumentationServerEnable>{{ wowza_rest_docs_enable | d(false,true) | bool | lower }}</DocumentationServerEnable>
 			<DocumentationServerPort>{{ wowza_rest_docs_port | default('8089', true) }}</DocumentationServerPort>
-			<!-- none, basic, digest, remotehttp, digestfile -->
+			<!-- digest, remotehttp, digestfile -->
 			<DocumentationServerAuthenticationMethod>{{ wowza_rest_auth_method | default('digest', true) }}</DocumentationServerAuthenticationMethod>
 			<Properties>
 			</Properties>
