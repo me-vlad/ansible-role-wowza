@@ -138,11 +138,6 @@
 				<HTTPStreamerAdapterIDs></HTTPStreamerAdapterIDs>
 				<HTTPProviders>
 					<HTTPProvider>
-						<BaseClass>com.wowza.wms.http.streammanager.HTTPStreamManager</BaseClass>
-						<RequestFilters>streammanager*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
-					</HTTPProvider>
-					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPServerInfoXML</BaseClass>
 						<RequestFilters>serverinfo*</RequestFilters>
 						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
@@ -165,11 +160,6 @@
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPProviderMediaList</BaseClass>
 						<RequestFilters>medialist*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
-					</HTTPProvider>
-					<HTTPProvider>
-						<BaseClass>com.wowza.wms.livestreamrecord.http.HTTPLiveStreamRecord</BaseClass>
-						<RequestFilters>livestreamrecord*</RequestFilters>
 						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 {% if wowza_modules_streampublisher_enable %}
