@@ -15,9 +15,9 @@ Requirements are listed in the role metadata.
 ### Default role variables
 
 ``` yaml
-wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-4-8-0/"
-wowza_installer: "WowzaStreamingEngine-4.8.0-linux-x64-installer.run"
-wowza_installer_checksum: "sha1:09a0f7d6ae3f420e001ea2195f75dd1e5cd6d44a"
+wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-4-8-5/"
+wowza_installer: "WowzaStreamingEngine-4.8.5-linux-x64-installer.run"
+wowza_installer_checksum: "sha1:ec48f072b8c54948ce8e1f4cc4f3af361d5e1665"
 
 # Must be located on the file system with exec mount option!!!
 wowza_install_workdir: "/root"
@@ -115,8 +115,9 @@ wowza_rest_ip: '*'
 wowza_rest_port: 8087
 wowza_rest_whitelist: ['127.0.0.1']
 wowza_rest_blacklist: []
-# Defaul AuthenticationMethod for REST API
-# none, basic, digest, remotehttp, digestfile
+# Defaul AuthenticationMethod for REST API.
+# 'none' and 'basic' are no longer compatible starting from WSE 4.8.5.
+# Use digest, digestfile or remotehttp
 wowza_rest_auth_method: digest
 wowza_rest_docs_enable: no
 wowza_rest_docs_port: 8089
