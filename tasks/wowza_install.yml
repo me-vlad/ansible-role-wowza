@@ -35,14 +35,10 @@
     - wowza_user | length > 0
     - wowza_password | length > 0
 
-- name: Print a good news (if any)
-  shell: "echo '{{ '='*15 }} {{ red }}Wowza Streaming Engine successfully installed!{{ CSI }}0m {{ '='*15 }}' > /dev/tty"
-  changed_when: no
-  become: no
-  delegate_to: localhost
-  vars:
-    CSI: "\x1B["
-    red: '{{ CSI }}31m'
+- name: Print install finish info
+  debug:
+    msg: "Wowza Streaming Engine successfully installed!"
+    verbosity: 0
   when:
     - wowza_expect_output.stdout | length > 0
     - wowza_expect_output.stdout.find("Setup has finished installing Wowza Streaming Engine on your computer.") != -1
