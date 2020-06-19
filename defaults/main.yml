@@ -1,5 +1,8 @@
 ---
 
+# Just install WSE without any tweaks and configuration changes
+wowza_default_install: no
+
 wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-4-8-5/"
 wowza_installer: "WowzaStreamingEngine-4.8.5-linux-x64-installer.run"
 wowza_installer_checksum: "sha1:ec48f072b8c54948ce8e1f4cc4f3af361d5e1665"
