@@ -15,12 +15,12 @@ expect -exact "License Key: \[\]: "
 send -- "{{ wowza_license_key }}\r"
 
 expect -exact "User Name: \[\]: "
-send -- "{{ wowza_user }}\r"
+send -- "{{ wowza_admin_user }}\r"
 
 expect -exact "Password: :"
-send -- "{{ wowza_password }}\r"
+send -- "{{ wowza_admin_password }}\r"
 expect -exact "Confirm Password: :"
-send -- "{{ wowza_password }}\r"
+send -- "{{ wowza_admin_password }}\r"
 
 expect -exact "Start Wowza Streaming Engine automatically \[Y/n\]: "
 send -- "y\r"

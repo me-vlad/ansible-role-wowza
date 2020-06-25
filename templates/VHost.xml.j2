@@ -51,7 +51,7 @@
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPServerVersion</BaseClass>
 						<RequestFilters>*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 				</HTTPProviders>
 			</HostPort>
@@ -113,7 +113,7 @@
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPServerVersion</BaseClass>
 						<RequestFilters>*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 				</HTTPProviders>
 			</HostPort>
@@ -140,39 +140,39 @@
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPServerInfoXML</BaseClass>
 						<RequestFilters>serverinfo*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPConnectionInfo</BaseClass>
 						<RequestFilters>connectioninfo*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPConnectionCountsXML</BaseClass>
 						<RequestFilters>connectioncounts*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.transcoder.httpprovider.HTTPTranscoderThumbnail</BaseClass>
 						<RequestFilters>transcoderthumbnail*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPProviderMediaList</BaseClass>
 						<RequestFilters>medialist*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 {% if wowza_modules_streampublisher_enable %}
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.plugin.streampublisher.HttpProviderStreamPublisherControl</BaseClass>
 						<RequestFilters>schedules*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 {% endif %}
 					<HTTPProvider>
 						<BaseClass>com.wowza.wms.http.HTTPServerVersion</BaseClass>
 						<RequestFilters>*</RequestFilters>
-						<AuthenticationMethod>{{ wowza_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
+						<AuthenticationMethod>{{ wowza_admin_auth_method | default('admin-digest', true) }}</AuthenticationMethod>
 					</HTTPProvider>
 				</HTTPProviders>
 			</HostPort>

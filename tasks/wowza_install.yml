@@ -32,8 +32,8 @@
   register: wowza_expect_output
   when:
     - wowza_license_key | length > 0
-    - wowza_user | length > 0
-    - wowza_password | length > 0
+    - wowza_admin_user | length > 0
+    - wowza_admin_password | length > 0
 
 - name: Print install finish info
   debug:

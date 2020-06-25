@@ -127,6 +127,14 @@
     group: root
   notify: wowza restart wse
 
+- name: Create admin.password config
+  template:
+    src: admin.password.j2
+    dest: "{{ wowza_config_admin_password }}"
+    mode: '0640'
+    owner: root
+    group: root
+
 - name: Add Wowza Modules
   unarchive:
     src: "{{ wowza_modules_collection_url + '/' + lookup('vars', wowza_module) }}"

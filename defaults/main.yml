@@ -13,11 +13,18 @@ wowza_install_workdir: "/root"
 wowza_install_script: wowza_install_script.exp
 
 # Wowza admin user
-wowza_user: ""
+wowza_admin_user: ""
 # Wowza admin password
-wowza_password: ""
+wowza_admin_password: ""
 # Wowza Streaming Engine license key
 wowza_license_key: ""
+
+wowza_users: ""
+#  sampleuser:
+#    password: sampleuser_secret
+#    groups:
+#      - admin
+#      - advUser
 
 # Wowza Streaming Engine default path variables
 wowza_directory: "/usr/local/WowzaStreamingEngine"
@@ -81,7 +88,8 @@ wowza_tcp_nodelay: no
 wowza_acceptor_backlog: 100
 # Defaul AuthenticationMethod for HTTP Providers and WSE Manager
 # none, admin-basic, admin-digest, admin-file-digest
-wowza_auth_method: admin-digest
+# Set to admin-file-digest if digestfile REST authentication enabled.
+wowza_admin_auth_method: "{{ 'admin-file-digest' if wowza_rest_auth_method == 'digestfile' else 'admin-digest' }}"
 wowza_admin_ip: '*'
 wowza_admin_port: 8086
 # Wowza SSL
