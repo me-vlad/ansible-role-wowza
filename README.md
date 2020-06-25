@@ -34,12 +34,12 @@ wowza_admin_password: ""
 # Wowza Streaming Engine license key
 wowza_license_key: ""
 
-wowza_users: ""
-#  sampleuser:
-#    password: sampleuser_secret
-#    groups:
-#      - admin
-#      - advUser
+wowza_users:
+  - name: sampleuser
+    password: sampleuser_secret
+    groups:
+      - admin
+      - advUser
 
 # Wowza Streaming Engine default path variables
 wowza_directory: "/usr/local/WowzaStreamingEngine"

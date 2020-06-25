@@ -19,8 +19,8 @@ wowza_admin_password: ""
 # Wowza Streaming Engine license key
 wowza_license_key: ""
 
-wowza_users: ""
-#  sampleuser:
+wowza_users: []
+#  - name: sampleuser
 #    password: sampleuser_secret
 #    groups:
 #      - admin
