@@ -136,12 +136,6 @@ wowza_mediacache_enable: no
 # Production or Development or custom size e.g. 8000M
 wowza_tuning_heapsize: Development
 
-# WARNING!!! Wowza Load Testing Tool disables Wowza Streaming Engine Manager.
-# Do not use Wowza Load Testing Tool on production streaming servers!
-# You need WowzaStreamingEngineLoadTestTool.jar file from separate package:
-# https://www.wowza.com/docs/test-wowza-streaming-engine-media-server-streaming-load
-wowza_loadtesttool_enable: no
-
 # Wowza modules
 wowza_modules_collection_url: 'https://www.wowza.com/downloads/forums/collection'
 wowza_modules_streampublisher_enable: no

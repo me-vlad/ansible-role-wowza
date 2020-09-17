@@ -63,11 +63,6 @@
 			<DefaultStreamPrefix>mp4</DefaultStreamPrefix>
 		</Streams>
 		<ServerListeners>
-{% if wowza_loadtesttool_enable %}
-			<ServerListener>
-				<BaseClass>com.wowza.wse.loadtest.server.ServerManager</BaseClass>
-			</ServerListener>
-{% endif  %}
 {% if wowza_mediacache_enable %}
 			<ServerListener>
 				<BaseClass>com.wowza.wms.mediacache.impl.MediaCacheServerListener</BaseClass>
@@ -113,17 +108,6 @@
 		</Transcoder>
 		<!-- Properties defined here will be added to the IServer.getProperties() collection -->
 		<Properties>
-{% if wowza_loadtesttool_enable %}
-			<Property>
-				<Name>loadTest_authentication</Name>
-				<Value>none</Value>
-			</Property>
-			<Property>
-				<Name>loadTest_forceMaxProtocolClient</Name>
-				<Value>5000</Value>
-				<Type>Integer</Type>
-			</Property>
-{% endif  %}
 		</Properties>
 	</Server>
 </Root>
