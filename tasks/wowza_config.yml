@@ -40,45 +40,31 @@
     group: root
 
 - name: Change default WSE logs path and add XFF field to logs
-  lineinfile:
-    dest: "{{ wowza_config_log4j }}"
+  replace:
+    path: "{{ wowza_config_log }}"
     regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    backrefs: yes
-    state: present
+    replace: "{{ item.replace }}"
     backup: no
   loop:
-    - regexp: '^log4j\.appender\.serverAccess\.File='
-      line: 'log4j.appender.serverAccess.File={{ wowza_log_directory }}/wowzastreamingengine_access.log'
-    - regexp: '^log4j\.appender\.serverError\.File='
-      line: 'log4j.appender.serverError.File={{ wowza_log_directory }}/wowzastreamingengine_error.log'
-    - regexp: '^log4j\.appender\.serverStats\.File='
-      line: 'log4j.appender.serverStats.File={{ wowza_log_directory }}/wowzastreamingengine_stats.log'
-    - regexp: '^(log4j\.appender\.serverAccess\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
-      line: "\\1,x-forwarded-ip"
-    - regexp: '^(log4j\.appender\.serverError\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
-      line: "\\1,x-forwarded-ip"
-    - regexp: '^(log4j\.appender\.serverStats\.layout\.Fields=.+(?:(?<!,x-forwarded-ip)){1})$'
-      line: "\\1,x-forwarded-ip"
+    - regexp: '\${(?:sys:)?com\.wowza\.wms\.ConfigHome}/logs'
+      replace: "{{ wowza_log_directory }}"
+    - regexp: '(?<!x-forwarded-ip),c-ip,'
+      replace: ",x-forwarded-ip,c-ip,"
+    - regexp: '(?<!x-forwarded-ip)\\tc-ip\\t'
+      replace: '\\tx-forwarded-ip\\tc-ip\\t'
+    - regexp: '(?<!%replace{\%X{x-forwarded-ip}}{\^\$}{-})\\t%replace{\%X{c-ip}}{\^\$}{-}\\t'
+      replace: !unsafe '\\t%replace{%X{x-forwarded-ip}}{^$}{-}\\t%replace{%X{c-ip}}{^$}{-}\\t'
   notify: wowza restart wse
 
 - name: Change default WSE Manager logs path
-  lineinfile:
-    dest: "{{ item.dest }}"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
+  replace:
+    path: "{{ item }}"
+    regexp: '\${(?:sys:)?com\.wowza\.wms\.ConfigHome}/logs'
+    replace: "{{ wowza_log_directory }}"
     backup: no
   loop:
-    - dest: '{{ wowza_manager_config_tomcat_log4j }}'
-      regexp: '^1catalina\.org\.apache\.juli\.FileHandler\.directory'
-      line: '1catalina.org.apache.juli.FileHandler.directory = {{ wowza_log_directory }}'
-    - dest: '{{ wowza_manager_config_log4j }}'
-      regexp: '^log4j\.appender\.serverAccess\.File='
-      line: 'log4j.appender.serverAccess.File={{ wowza_log_directory }}/wmsmanager_access.log'
-    - dest: '{{ wowza_manager_config_log4j }}'
-      regexp: '^log4j\.appender\.serverError\.File='
-      line: 'log4j.appender.serverError.File={{ wowza_log_directory }}/wmsmanager_error.log'
+    - '{{ wowza_manager_config_log }}'
+    - '{{ wowza_manager_config_tomcat_log4j }}'
   notify: wowza restart wse manager
 
 - name: Fix windows CR EOL in WSE configs

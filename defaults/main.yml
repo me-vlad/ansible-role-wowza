@@ -3,8 +3,9 @@
 # Just install WSE without any tweaks and configuration changes
 wowza_default_install: no
 
-wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-4-8-5/"
-wowza_installer: "WowzaStreamingEngine-4.8.5-linux-x64-installer.run"
+wowza_version: "4.8.5"
+wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-{{ wowza_version | regex_replace('\\.', '-') }}/"
+wowza_installer: "WowzaStreamingEngine-{{ wowza_version }}-linux-x64-installer.run"
 wowza_installer_checksum: "sha1:ec48f072b8c54948ce8e1f4cc4f3af361d5e1665"
 
 # Must be located on the file system with exec mount option!!!
@@ -54,7 +55,11 @@ wowza_config_publish_password: "{{ wowza_config_directory }}/publish.password"
 wowza_config_jmxremote_access: "{{ wowza_config_directory }}/jmxremote.access"
 wowza_config_jmxremote_password: "{{ wowza_config_directory }}/jmxremote.password"
 wowza_config_log4j: "{{ wowza_config_directory }}/log4j.properties"
+wowza_config_log4j2: "{{ wowza_config_directory }}/log4j2-config.xml"
+wowza_config_log: "{{ wowza_config_log4j2 if wowza_version is version('4.8.6', '>=') else wowza_config_log4j }}"
 wowza_manager_config_log4j: "{{ wowza_manager_counfig_directory }}/log4j.properties"
+wowza_manager_config_log4j2: "{{ wowza_manager_counfig_directory }}/log4j2-config.xml"
+wowza_manager_config_log: "{{ wowza_manager_config_log4j2 if wowza_version is version('4.8.6', '>=') else wowza_manager_config_log4j }}"
 wowza_manager_config_tomcat_log4j: "{{ wowza_manager_counfig_directory }}/tomcat-log4j.properties"
 
 wowza_config_files:
@@ -68,8 +73,8 @@ wowza_config_files:
   - "{{ wowza_config_publish_password }}"
   - "{{ wowza_config_jmxremote_access }}"
   - "{{ wowza_config_jmxremote_password }}"
-  - "{{ wowza_config_log4j }}"
-  - "{{ wowza_manager_config_log4j }}"
+  - "{{ wowza_config_log }}"
+  - "{{ wowza_manager_config_log }}"
   - "{{ wowza_manager_config_tomcat_log4j }}"
 
 # Wowza Streaming Engine configs with sensitive data
