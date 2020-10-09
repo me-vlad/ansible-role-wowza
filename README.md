@@ -1,6 +1,6 @@
 # ansible-wowza
 
-Ansible role to install [Wowza Streaming Engine](https://www.wowza.com/products/streaming-engine) on Linux.
+Ansible role to install and configure [Wowza Streaming Engine](https://www.wowza.com/products/streaming-engine) on Linux.
 
 ## Idempotence note
 
@@ -18,10 +18,10 @@ Requirements are listed in the role metadata.
 # Just install WSE without any tweaks and configuration changes
 wowza_default_install: no
 
-wowza_version: "4.8.5"
+wowza_version: "4.8.5.05"
 wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-{{ wowza_version | regex_replace('\\.', '-') }}/"
 wowza_installer: "WowzaStreamingEngine-{{ wowza_version }}-linux-x64-installer.run"
-wowza_installer_checksum: "sha1:ec48f072b8c54948ce8e1f4cc4f3af361d5e1665"
+wowza_installer_checksum: "sha1:1043ab6cf6b77f73c0a8338cb2741117e8f12971"
 
 # Must be located on the file system with exec mount option!!!
 wowza_install_workdir: "/root"
