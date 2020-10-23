@@ -27,6 +27,8 @@ galaxy_info:
         - xenial
         - bionic
         - eoan
+        - focal
+        - groovy
 
   galaxy_tags:
     - linux
