@@ -83,7 +83,7 @@
     state: present
     backup: no
   vars:
-    wowza_java_heapsize: "{% if wowza_tuning_heapsize is in ['Production', 'Development'] -%}
+    wowza_java_heapsize: "{% if wowza_tuning_heapsize in ['Production', 'Development'] -%}
                           ${com.wowza.wms.TuningHeapSize{{ wowza_tuning_heapsize }}}
                           {%- elif wowza_tuning_heapsize | regex_search('^\\d+M$') %}{{ wowza_tuning_heapsize }}{% endif %}"
   notify: wowza restart wse
