@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+{% if wowza_version is version('4.8.8', '>=') %}
+<Root version="3">
+{% else %}
 <Root version="2">
+{% endif %}
+
 	<Server>
 		<Name>Wowza Streaming Engine</Name>
 		<Description>Wowza Streaming Engine is robust, customizable, and scalable server software that powers reliable streaming of high-quality video and audio to any device, anywhere.</Description>
@@ -7,8 +12,15 @@
 			<Enable>{{ wowza_rest_enable | bool | lower }}</Enable>
 			<IPAddress>{{ wowza_rest_ip | default('*', true) }}</IPAddress>
 			<Port>{{ wowza_rest_port | default('8087', true) }}</Port>
+{% if wowza_version is version('4.8.8', '>=') %}
+			<!-- none, basic, digest, remotehttp, digestfile -->
+			<AuthenticationMethod>{{ wowza_rest_auth_method | default('basic', true) }}</AuthenticationMethod>
+			<!-- cleartext, digest, bcrypt -->
+			<PasswordEncodingScheme>{{ wowza_rest_password_encoding | default('bcrypt', true) }}</PasswordEncodingScheme>
+{% else %}
 			<!-- digest, remotehttp, digestfile -->
-			<AuthenticationMethod>{{ wowza_rest_auth_method | default('digest', true) }}</AuthenticationMethod>
+			<AuthenticationMethod>{{ wowza_rest_auth_method | default('digestfile', true) }}</AuthenticationMethod>
+{% endif %}
 			<DiagnosticURLEnable>true</DiagnosticURLEnable>
 			<SSLConfig>
 				<Enable>false</Enable>
@@ -20,13 +32,18 @@
 				<CipherSuites></CipherSuites>
 				<Protocols></Protocols>
 			</SSLConfig>
-			<IPWhiteList>{{ wowza_rest_whitelist | join(',') | default('127.0.0.1', true) }}</IPWhiteList>
-			<IPBlackList>{{ wowza_rest_blacklist | join(',') | default('', true) }}</IPBlackList>
+			<IPWhiteList>{{ wowza_rest_allowlist | join(',') | default('127.0.0.1', true) }}</IPWhiteList>
+			<IPBlackList>{{ wowza_rest_blocklist | join(',') | default('', true) }}</IPBlackList>
 			<EnableXMLFile>false</EnableXMLFile>
 			<DocumentationServerEnable>{{ wowza_rest_docs_enable | d(false,true) | bool | lower }}</DocumentationServerEnable>
 			<DocumentationServerPort>{{ wowza_rest_docs_port | default('8089', true) }}</DocumentationServerPort>
+{% if wowza_version is version('4.8.8', '>=') %}
+			<!-- none(only) -->
+			<DocumentationServerAuthenticationMethod>none</DocumentationServerAuthenticationMethod>
+{% else %}
 			<!-- digest, remotehttp, digestfile -->
-			<DocumentationServerAuthenticationMethod>{{ wowza_rest_auth_method | default('digest', true) }}</DocumentationServerAuthenticationMethod>
+			<DocumentationServerAuthenticationMethod>{{ wowza_rest_auth_method | default('digestfile', true) }}</DocumentationServerAuthenticationMethod>
+{% endif %}
 			<Properties>
 			</Properties>
 		</RESTInterface>

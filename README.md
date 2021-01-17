@@ -18,10 +18,10 @@ Requirements are listed in the role metadata.
 # Just install WSE without any tweaks and configuration changes
 wowza_default_install: no
 
-wowza_version: "4.8.5.05"
+wowza_version: "4.8.8.01"
 wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-{{ wowza_version | regex_replace('\\.', '-') }}/"
 wowza_installer: "WowzaStreamingEngine-{{ wowza_version }}-linux-x64-installer.run"
-wowza_installer_checksum: "sha1:1043ab6cf6b77f73c0a8338cb2741117e8f12971"
+wowza_installer_checksum: "sha1:54d81f777a7527c04942d9c16f36c6a0eceebec3"
 
 # Must be located on the file system with exec mount option!!!
 wowza_install_workdir: "/root"
@@ -35,12 +35,15 @@ wowza_admin_password: ""
 # Wowza Streaming Engine license key
 wowza_license_key: ""
 
-wowza_users:
-  - name: sampleuser
-    password: sampleuser_secret
-    groups:
-      - admin
-      - advUser
+# groups: admin|advUser, admin, basic
+# read only group 'basic' supported from WSE 4.8.8.01
+wowza_users: []
+#  - name: sampleuser
+#    password: sampleuser_secret
+#    groups: admin|advUser
+#  - name: readonlyuser
+#    password: readonlyuser_secret
+#    groups: basic
 
 # Wowza Streaming Engine default path variables
 wowza_directory: "/usr/local/WowzaStreamingEngine"
@@ -109,7 +112,7 @@ wowza_acceptor_backlog: 100
 # Defaul AuthenticationMethod for HTTP Providers and WSE Manager
 # none, admin-basic, admin-digest, admin-file-digest
 # Set to admin-file-digest if digestfile REST authentication enabled.
-wowza_admin_auth_method: "{{ 'admin-file-digest' if wowza_rest_auth_method == 'digestfile' else 'admin-digest' }}"
+wowza_admin_auth_method: "{{ 'admin-file-digest' if wowza_rest_auth_method == 'digestfile' else 'admin-basic' }}"
 wowza_admin_ip: '*'
 wowza_admin_port: 8086
 # Wowza SSL
@@ -129,12 +132,18 @@ wowza_rest_enable: yes
 # REST API listen address
 wowza_rest_ip: '*'
 wowza_rest_port: 8087
-wowza_rest_whitelist: ['127.0.0.1']
-wowza_rest_blacklist: []
+wowza_rest_allowlist: ['127.0.0.1']
+wowza_rest_blocklist: []
 # Defaul AuthenticationMethod for REST API.
-# 'none' and 'basic' are no longer compatible starting from WSE 4.8.5.
-# Use digest, digestfile or remotehttp
-wowza_rest_auth_method: digest
+# none, basic, digest, digestfile or remotehttp
+# 'none' and 'basic' are no compatible with WSE 4.8.5.
+wowza_rest_auth_method: "{{ 'basic' if wowza_version is version('4.8.8', '>=') else 'digestfile' }}"
+# Password encoding method
+# cleartext (for basic and digest auth);
+# digest (for digestfile auth);
+# bcrypt (for basic auth).
+# bcrypt supported from WSE 4.8.8.01, works with ansible >= 2.7 and python-passlib on a control node
+wowza_rest_password_encoding: "{{ 'digest' if wowza_rest_auth_method == 'digestfile' else 'bcrypt' }}"
 wowza_rest_docs_enable: no
 wowza_rest_docs_port: 8089
 

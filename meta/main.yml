@@ -5,7 +5,7 @@ galaxy_info:
   company: Server Labs
   description: Wowza Streaming Engine setup
   license: MIT
-  min_ansible_version: 2.5
+  min_ansible_version: 2.7
 
   platforms:
     - name: EL
