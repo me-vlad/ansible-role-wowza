@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-{% if wowza_version is version('4.8.8', '>=') %}
+{% if wowza_version is version('4.8.7', '>=') %}
 <Root version="3">
 {% else %}
 <Root version="2">
@@ -12,7 +12,7 @@
 			<Enable>{{ wowza_rest_enable | bool | lower }}</Enable>
 			<IPAddress>{{ wowza_rest_ip | default('*', true) }}</IPAddress>
 			<Port>{{ wowza_rest_port | default('8087', true) }}</Port>
-{% if wowza_version is version('4.8.8', '>=') %}
+{% if wowza_version is version('4.8.7', '>=') %}
 			<!-- none, basic, digest, remotehttp, digestfile -->
 			<AuthenticationMethod>{{ wowza_rest_auth_method | default('basic', true) }}</AuthenticationMethod>
 			<!-- cleartext, digest, bcrypt -->
@@ -37,7 +37,7 @@
 			<EnableXMLFile>false</EnableXMLFile>
 			<DocumentationServerEnable>{{ wowza_rest_docs_enable | d(false,true) | bool | lower }}</DocumentationServerEnable>
 			<DocumentationServerPort>{{ wowza_rest_docs_port | default('8089', true) }}</DocumentationServerPort>
-{% if wowza_version is version('4.8.8', '>=') %}
+{% if wowza_version is version('4.8.7', '>=') %}
 			<!-- none(only) -->
 			<DocumentationServerAuthenticationMethod>none</DocumentationServerAuthenticationMethod>
 {% else %}
