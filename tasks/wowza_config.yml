@@ -1,6 +1,6 @@
 ---
 
-- name: WSE files and directories permissions hardening # noqa 301
+- name: WSE files and directories permissions hardening  # noqa 301
   shell:
     cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ \( -type d -o -type f \) -print0 | xargs -0 chmod o-w'
     executable: '/bin/sh'
