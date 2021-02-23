@@ -1,6 +1,6 @@
 ---
 
-- name: WSE files and directories permissions hardening  # noqa 301
+- name: WSE files and directories permissions hardening  # noqa no-changed-when
   shell:
     cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ \( -type d -o -type f \) -print0 | xargs -0 chmod o-w'
     executable: '/bin/sh'
@@ -39,12 +39,12 @@
     owner: root
     group: root
 
-- name: Change default WSE logs path and add XFF field to logs
+- name: Change default WSE logs path and add XFF field to logs  # noqa var-spacing
   replace:
     path: "{{ wowza_config_log }}"
     regexp: "{{ item.regexp }}"
     replace: "{{ item.replace }}"
-    backup: no
+    backup: false
   loop:
     - regexp: '\${(?:sys:)?com\.wowza\.wms\.ConfigHome}/logs'
       replace: "{{ wowza_log_directory }}"
@@ -61,7 +61,7 @@
     path: "{{ item }}"
     regexp: '\${(?:sys:)?com\.wowza\.wms\.ConfigHome}/logs'
     replace: "{{ wowza_log_directory }}"
-    backup: no
+    backup: false
   loop:
     - '{{ wowza_manager_config_log }}'
     - '{{ wowza_manager_config_tomcat_log4j }}'
@@ -71,17 +71,17 @@
   replace:
     dest: "{{ item }}"
     regexp: "\r"
-    backup: no
+    backup: false
   loop: "{{ wowza_config_files }}"
 
-- name: Configure WSE java heap size (tuning)
+- name: Configure WSE java heap size (tuning)  # noqa no-tabs
   lineinfile:
     path: "{{ wowza_config_tune }}"
     regexp: '^.*<HeapSize>.*</HeapSize>'
     line: "\t\t<HeapSize>{{ wowza_java_heapsize }}</HeapSize>"
     insertbefore: "^.*</Tune>"
     state: present
-    backup: no
+    backup: false
   vars:
     wowza_java_heapsize: "{% if wowza_tuning_heapsize in ['Production', 'Development'] -%}
                           ${com.wowza.wms.TuningHeapSize{{ wowza_tuning_heapsize }}}
@@ -129,7 +129,7 @@
       - lib/
       - LICENSE.txt
       - version.txt
-    remote_src: yes
+    remote_src: true
     mode: '0644'
     owner: root
     group: root

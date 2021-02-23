@@ -1,7 +1,7 @@
 ---
 
 # Just install WSE without any tweaks and configuration changes
-wowza_default_install: no
+wowza_default_install: false
 
 wowza_version: "4.8.10"
 wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-{{ wowza_version | regex_replace('\\.', '-') }}/"
@@ -92,7 +92,7 @@ wowza_config_secret_files:
 # Wowza Vhost config
 wowza_streaming_ip: '*'
 wowza_streaming_port: ['1935']
-wowza_tcp_nodelay: no
+wowza_tcp_nodelay: false
 wowza_acceptor_backlog: 100
 # Defaul AuthenticationMethod for HTTP Providers and WSE Manager
 # none, admin-basic, admin-digest, admin-file-digest
@@ -101,19 +101,19 @@ wowza_admin_auth_method: "{{ 'admin-file-digest' if wowza_rest_auth_method == 'd
 wowza_admin_ip: '*'
 wowza_admin_port: 8086
 # Wowza SSL
-wowza_ssl_enable: no
+wowza_ssl_enable: false
 wowza_streaming_ssl_ip: '*'
 wowza_streaming_ssl_port: 443
 wowza_ssl_keystore_file: 'keystore.jks'
 wowza_ssl_keystore_password: ''
 # Enable Wowza SSL above to use WebRTC
-wowza_webrtc_enable: no
-wowza_webrtc_admin_enable: no
+wowza_webrtc_enable: false
+wowza_webrtc_admin_enable: false
 wowza_webrtc_admin_ip: '*'
 wowza_webrtc_admin_port: 9443
 
 # Wowza REST API
-wowza_rest_enable: yes
+wowza_rest_enable: true
 # REST API listen address
 wowza_rest_ip: '*'
 wowza_rest_port: 8087
@@ -129,34 +129,34 @@ wowza_rest_auth_method: "{{ 'basic' if wowza_version is version('4.8.7', '>=') e
 # bcrypt (for basic auth).
 # bcrypt supported from WSE 4.8.8.01, works with ansible >= 2.7 and python-passlib on a control node
 wowza_rest_password_encoding: "{{ 'digest' if wowza_rest_auth_method == 'digestfile' else 'bcrypt' }}"
-wowza_rest_docs_enable: no
+wowza_rest_docs_enable: false
 wowza_rest_docs_port: 8089
 
 # Wowza command interface
-wowza_command_enable: no
+wowza_command_enable: false
 wowza_command_ip: '127.0.0.1'
 wowza_command_port: 8083
 
 # Wowza JMX interface
-wowza_jmx_enable: no
+wowza_jmx_enable: false
 wowza_jmx_ip: '127.0.0.1'
 wowza_jmx_rmi_hostname: localhost
 wowza_jmx_rmi_connection_port: 8084
 wowza_jmx_rmi_registry_port: 8085
 
 # Wowza Mediacache
-wowza_mediacache_enable: no
+wowza_mediacache_enable: false
 
 # Production or Development or custom size e.g. 8000M
 wowza_tuning_heapsize: Development
 
 # Wowza modules
 wowza_modules_collection_url: 'https://www.wowza.com/downloads/forums/collection'
-wowza_modules_streampublisher_enable: no
+wowza_modules_streampublisher_enable: false
 wowza_modules_streampublisher: 'wse-plugin-streampublisher.zip'
-wowza_modules_dvrrecordercontrol_enable: no
+wowza_modules_dvrrecordercontrol_enable: false
 wowza_modules_dvrrecordercontrol: wse-plugin-dvrrecordercontrol.zip
-wowza_modules_packetizercontrol_enable: no
+wowza_modules_packetizercontrol_enable: false
 wowza_modules_packetizercontrol: wse-plugin-packetizercontrol.zip
-wowza_modules_transcodercontrol_enable: no
+wowza_modules_transcodercontrol_enable: false
 wowza_modules_transcodercontrol: wse-plugin-transcodercontrol.zip

@@ -7,7 +7,7 @@
     owner: root
     group: root
     mode: '0700'
-    force: no
+    force: false
     checksum: "{{ wowza_installer_checksum }}"
   when:
     - wowza_download_path | length > 0
@@ -24,13 +24,13 @@
     owner: root
     group: root
     mode: "0700"
-  no_log: yes
+  no_log: true
 
 - name: Run expect script for WSE install
   command:
     cmd: "{{ wowza_install_workdir }}/{{ wowza_install_script }}"
     creates: "{{ wowza_license_file }}"
-  no_log: yes
+  no_log: true
   register: wowza_expect_output
   when:
     - wowza_license_key | length > 0
