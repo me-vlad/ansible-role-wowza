@@ -10,6 +10,8 @@ Please note: checking for already installed on the server Wowza Streaming Engine
 
 Requirements are listed in the role metadata.
 
+Client system that runs playbook needs python-bcrypt with `pip install bcrypt`.
+
 ## Role Variables
 
 ### Default role variables
