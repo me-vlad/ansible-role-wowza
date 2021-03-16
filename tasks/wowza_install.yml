@@ -15,7 +15,7 @@
     - wowza_installer_checksum | length > 0
 
 - name: Ensure expect is installed
-  package: name=expect state=installed
+  package: name=expect state=present
 
 - name: Create expect script on the server
   template:
