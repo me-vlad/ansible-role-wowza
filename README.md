@@ -10,7 +10,8 @@ Please note: checking for already installed on the server Wowza Streaming Engine
 
 Requirements are listed in the role metadata.
 
-Client system that runs playbook needs python-bcrypt with `pip install bcrypt`.
+Control node needs python-bcrypt installed.
+For bcrypt password encoding method python-passlib and ansible 2.7 or newer required on a control node.
 
 ## Role Variables
 
