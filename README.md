@@ -142,7 +142,7 @@ wowza_rest_allowlist: ['127.0.0.1']
 wowza_rest_blocklist: []
 # Defaul AuthenticationMethod for REST API.
 # none, basic, digest, digestfile or remotehttp
-# 'none' and 'basic' are no compatible with WSE 4.8.5.
+# 'none' and 'basic' are not compatible with WSE 4.8.5.
 wowza_rest_auth_method: "{{ 'basic' if wowza_version is version('4.8.7', '>=') else 'digestfile' }}"
 # Password encoding method
 # cleartext (for basic and digest auth);
