@@ -85,6 +85,8 @@ wowza_manager_config_log4j: "{{ wowza_manager_config_directory }}/log4j.properti
 wowza_manager_config_log4j2: "{{ wowza_manager_config_directory }}/log4j2-config.xml"
 wowza_manager_config_log: "{{ wowza_manager_config_log4j2 if wowza_version is version('4.8.6', '>=') else wowza_manager_config_log4j }}"
 wowza_manager_config_tomcat_log4j: "{{ wowza_manager_config_directory }}/tomcat-log4j.properties"
+wowza_manager_config_winstone_log4j: "{{ wowza_manager_config_directory }}/winstone-log4j.properties"
+wowza_manager_config_servlet_log4j: "{{ wowza_manager_config_tomcat_log4j if wowza_version is version('4.7.8', '>=') else wowza_manager_config_winstone_log4j }}"
 
 wowza_config_files:
   - "{{ wowza_config_server }}"
@@ -99,7 +101,7 @@ wowza_config_files:
   - "{{ wowza_config_jmxremote_password }}"
   - "{{ wowza_config_log }}"
   - "{{ wowza_manager_config_log }}"
-  - "{{ wowza_manager_config_tomcat_log4j }}"
+  - "{{ wowza_manager_config_servlet_log4j }}"
 
 # Wowza Streaming Engine configs with sensitive data
 wowza_config_secret_files:
