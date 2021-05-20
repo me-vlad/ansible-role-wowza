@@ -64,7 +64,7 @@
     backup: false
   loop:
     - '{{ wowza_manager_config_log }}'
-    - '{{ wowza_manager_config_tomcat_log4j }}'
+    - '{{ wowza_manager_config_servlet_log4j }}'
   notify: wowza restart wse manager
 
 - name: Fix windows CR EOL in WSE configs
