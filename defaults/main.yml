@@ -66,7 +66,8 @@ wowza_manager_config_log: "{{ wowza_manager_config_log4j2 if wowza_version is ve
 
 wowza_manager_config_tomcat_log4j: "{{ wowza_manager_config_directory }}/tomcat-log4j.properties"
 wowza_manager_config_winstone_log4j: "{{ wowza_manager_config_directory }}/winstone-log4j.properties"
-wowza_manager_config_servlet_log4j: "{{ wowza_manager_config_tomcat_log4j if wowza_version is version('4.7.8', '>=') else wowza_manager_config_winstone_log4j }}"
+wowza_manager_config_servlet_log4j: "{{ wowza_manager_config_tomcat_log4j if wowza_version is version('4.7.8', '>=')
+                                        else wowza_manager_config_winstone_log4j }}"
 
 wowza_config_files:
   - "{{ wowza_config_server }}"
