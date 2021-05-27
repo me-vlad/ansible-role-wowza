@@ -14,10 +14,10 @@ galaxy_info:
         - 8
     - name: Fedora
       versions:
-        - all
+        - 33
+        - 34
     - name: Debian
       versions:
-        - jessie
         - stretch
         - buster
         - bullseye
@@ -26,9 +26,9 @@ galaxy_info:
         - trusty
         - xenial
         - bionic
-        - eoan
         - focal
         - groovy
+        - hirsute
 
   galaxy_tags:
     - linux
