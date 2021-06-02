@@ -14,8 +14,7 @@ galaxy_info:
         - 8
     - name: Fedora
       versions:
-        - 33
-        - 34
+        - all
     - name: Debian
       versions:
         - stretch
@@ -28,7 +27,6 @@ galaxy_info:
         - bionic
         - focal
         - groovy
-        - hirsute
 
   galaxy_tags:
     - linux
