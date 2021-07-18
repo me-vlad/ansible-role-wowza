@@ -8,11 +8,7 @@ galaxy_info:
   min_ansible_version: 2.7
 
   platforms:
-    - name: EL
-      versions:
-        - 7
-        - 8
-    - name: Fedora
+    - name: Amazon Linux 2
       versions:
         - all
     - name: Debian
@@ -20,6 +16,13 @@ galaxy_info:
         - stretch
         - buster
         - bullseye
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Fedora
+      versions:
+        - all
     - name: Ubuntu
       versions:
         - trusty
@@ -36,3 +39,6 @@ galaxy_info:
     - debian
     - ubuntu
     - streaming
+    - multimedia
+    - media
+    - video
