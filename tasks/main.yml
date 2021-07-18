@@ -1,20 +1,20 @@
 ---
 
-- name: Check that WSE is installed
+- name: WOWZA | Check that WSE is installed
   stat:
     path: "{{ wowza_license_file }}"
     get_checksum: false
   register: wse_chkinstall
 
-- name: Install Wowza Streaming Engine
+- name: WOWZA | Install Wowza Streaming Engine
   import_tasks: wowza_install.yml
   when: wse_chkinstall.stat.exists is defined and not wse_chkinstall.stat.exists
 
-- name: Configure Wowza Streaming Engine
+- name: WOWZA | Configure Wowza Streaming Engine
   import_tasks: wowza_config.yml
   when: wowza_default_install is defined and not wowza_default_install
 
-- name: Ensure Wowza services running and enabled
+- name: WOWZA | Ensure Wowza services running and enabled
   service:
     name: "{{ item }}"
     enabled: true

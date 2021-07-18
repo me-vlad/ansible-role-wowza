@@ -1,11 +1,11 @@
 ---
 
-- name: WSE files and directories permissions hardening  # noqa no-changed-when 301
+- name: WOWZA | WSE files and directories permissions hardening  # noqa no-changed-when 301
   shell:
     cmd: 'set -eo pipefail && find /usr/local/WowzaStreamingEngine/ \( -type d -o -type f \) -print0 | xargs -0 chmod o-w'
     executable: '/bin/bash'
 
-- name: Set read-only permissions for uninstall files
+- name: WOWZA | Set read-only permissions for uninstall files
   file:
     path: "{{ item }}"
     state: file
@@ -14,7 +14,7 @@
     group: root
   loop: "{{ wowza_uninstall_files }}"
 
-- name: Fix sensitive config files permissions
+- name: WOWZA | Fix sensitive config files permissions
   file:
     name: "{{ item }}"
     state: file
@@ -23,7 +23,7 @@
     group: root
   loop: "{{ wowza_config_secret_files }}"
 
-- name: Fix WSE config directory permissions
+- name: WOWZA | Fix WSE config directory permissions
   file:
     name: "{{ wowza_config_directory }}"
     state: directory
@@ -31,7 +31,7 @@
     owner: root
     group: root
 
-- name: Create wowza logs directory
+- name: WOWZA | Create wowza logs directory
   file:
     name: "{{ wowza_log_directory }}"
     state: directory
@@ -39,7 +39,7 @@
     owner: root
     group: root
 
-- name: Change default WSE logs path and add XFF field to logs  # noqa var-spacing
+- name: WOWZA | Change default WSE logs path and add XFF field to logs  # noqa var-spacing
   replace:
     path: "{{ wowza_config_log }}"
     regexp: "{{ item.regexp }}"
@@ -54,9 +54,9 @@
       replace: '\\tx-forwarded-ip\\tc-ip\\t'
     - regexp: '(?<!%replace{\%X{x-forwarded-ip}}{\^\$}{-})\\t%replace{\%X{c-ip}}{\^\$}{-}\\t'
       replace: !unsafe '\\t%replace{%X{x-forwarded-ip}}{^$}{-}\\t%replace{%X{c-ip}}{^$}{-}\\t'
-  notify: wowza restart wse
+  notify: 'WOWZA | restart WSE'
 
-- name: Change default WSE Manager logs path
+- name: WOWZA | Change default WSE Manager logs path
   replace:
     path: "{{ item }}"
     regexp: '\${(?:sys:)?com\.wowza\.wms\.ConfigHome}/logs'
@@ -65,16 +65,16 @@
   loop:
     - '{{ wowza_manager_config_log }}'
     - '{{ wowza_manager_config_servlet_log4j }}'
-  notify: wowza restart wse manager
+  notify: 'WOWZA | restart WSE Manager'
 
-- name: Fix windows CR EOL in WSE configs
+- name: WOWZA | Fix windows CR EOL in WSE configs
   replace:
     dest: "{{ item }}"
     regexp: "\r"
     backup: false
   loop: "{{ wowza_config_files }}"
 
-- name: Configure WSE java heap size (tuning)  # noqa no-tabs
+- name: WOWZA | Configure WSE java heap size (tuning)  # noqa no-tabs
   lineinfile:
     path: "{{ wowza_config_tune }}"
     regexp: '^.*<HeapSize>.*</HeapSize>'
@@ -86,34 +86,34 @@
     wowza_java_heapsize: "{% if wowza_tuning_heapsize in ['Production', 'Development'] -%}
                           ${com.wowza.wms.TuningHeapSize{{ wowza_tuning_heapsize }}}
                           {%- elif wowza_tuning_heapsize | regex_search('^\\d+M$') %}{{ wowza_tuning_heapsize }}{% endif %}"
-  notify: wowza restart wse
+  notify: 'WOWZA | restart WSE'
   when:
     - wowza_tuning_heapsize is defined
     - wowza_java_heapsize is defined and wowza_java_heapsize | length > 0
 
-- name: Create Server.xml config
+- name: WOWZA | Create Server.xml config
   template:
     src: Server.xml.j2
     dest: "{{ wowza_config_server }}"
     mode: '0644'
     owner: root
     group: root
-  notify: wowza restart wse
+  notify: 'WOWZA | restart WSE'
   when:
     - wowza_rest_enable is defined and wowza_rest_enable != none
     - wowza_rest_docs_enable is defined
     - wowza_jmx_enable is defined
 
-- name: Create VHost.xml config
+- name: WOWZA | Create VHost.xml config
   template:
     src: VHost.xml.j2
     dest: "{{ wowza_config_vhost }}"
     mode: '0644'
     owner: root
     group: root
-  notify: wowza restart wse
+  notify: 'WOWZA | restart WSE'
 
-- name: Create admin.password config
+- name: WOWZA | Create admin.password config
   template:
     src: admin.password.j2
     dest: "{{ wowza_config_admin_password }}"
@@ -121,7 +121,7 @@
     owner: root
     group: root
 
-- name: Add Wowza Modules
+- name: WOWZA | Add Wowza Modules
   unarchive:
     src: "{{ wowza_modules_collection_url + '/' + lookup('vars', wowza_module) }}"
     dest: "{{ wowza_directory }}"
@@ -140,17 +140,17 @@
     - wowza_modules_transcodercontrol
   loop_control:
     loop_var: wowza_module
-  notify: wowza restart wse
+  notify: 'WOWZA | restart WSE'
   when:
     - lookup('vars', wowza_module + '_enable') is defined
     - lookup('vars', wowza_module + '_enable') | bool
 
-- name: Check OS init system
+- name: WOWZA | Check OS init system
   setup:
     filter: "ansible_service_mgr"
   when: ansible_facts['service_mgr'] is not defined
 
-- name: Create directory for systemd drop-in files
+- name: WOWZA | Create directory for systemd drop-in files
   file:
     name: "{{ wowza_systemd_include_dir }}"
     owner: root
@@ -159,7 +159,7 @@
     state: directory
   when: ansible_facts['service_mgr'] == 'systemd'
 
-- name: Add WSE systemd drop-in file
+- name: WOWZA | Add WSE systemd drop-in file
   copy:
     dest: "{{ wowza_systemd_include_dir }}/99.override.conf"
     owner: root
@@ -170,11 +170,11 @@
       [Service]
       LimitNOFILE=65536
   notify:
-    - 'wowza reload systemd'
-    - 'wowza restart wse'
+    - 'WOWZA | reload systemd'
+    - 'WOWZA | restart WSE'
   when: ansible_facts['service_mgr'] == 'systemd'
 
-- name: Fix WSE systemd service files permissions
+- name: WOWZA | Fix WSE systemd service files permissions
   file:
     name: "{{ item }}"
     state: file

@@ -1,6 +1,6 @@
 ---
 
-- name: Download Wowza installer
+- name: WOWZA | Download Wowza installer
   get_url:
     url: "{{ wowza_download_path }}{{ wowza_installer }}"
     dest: "{{ wowza_install_workdir }}/{{ wowza_installer }}"
@@ -14,10 +14,12 @@
     - wowza_installer | length > 0
     - wowza_installer_checksum | length > 0
 
-- name: Ensure expect is installed
-  package: name=expect state=present
+- name: WOWZA | Ensure expect is installed
+  package:
+    name: expect
+    state: present
 
-- name: Create expect script on the server
+- name: WOWZA | Create expect script on the server
   template:
     src: "{{ wowza_install_script }}.j2"
     dest: "{{ wowza_install_workdir }}/{{ wowza_install_script }}"
@@ -26,7 +28,7 @@
     mode: "0700"
   no_log: true
 
-- name: Run expect script for WSE install
+- name: WOWZA | Run expect script for WSE install
   command:
     cmd: "{{ wowza_install_workdir }}/{{ wowza_install_script }}"
     creates: "{{ wowza_license_file }}"
@@ -37,7 +39,7 @@
     - wowza_admin_user | length > 0
     - wowza_admin_password | length > 0
 
-- name: Print install finish info
+- name: WOWZA | Print install finish info
   debug:
     msg: "Wowza Streaming Engine successfully installed!"
     verbosity: 0
@@ -45,7 +47,7 @@
     - wowza_expect_output.stdout | length > 0
     - wowza_expect_output.stdout.find("Setup has finished installing Wowza Streaming Engine on your computer.") != -1
 
-- name: Remove expect script and installer from server
+- name: WOWZA | Remove expect script and installer from server
   file:
     name: "{{ item }}"
     state: absent

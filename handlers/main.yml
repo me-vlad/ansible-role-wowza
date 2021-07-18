@@ -1,10 +1,10 @@
 ---
 
-- name: wowza reload systemd
+- name: WOWZA | reload systemd
   systemd: daemon_reload=yes
 
-- name: wowza restart wse
+- name: WOWZA | restart WSE
   service: name=WowzaStreamingEngine state=restarted
 
-- name: wowza restart wse manager
+- name: WOWZA | restart WSE Manager
   service: name=WowzaStreamingEngineManager state=restarted
