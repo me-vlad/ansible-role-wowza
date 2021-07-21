@@ -68,6 +68,7 @@ wowza_uninstall_files:
   - "{{ wowza_directory }}/Uninstall\ Wowza\ Streaming\ Engine.desktop"
 
 wowza_license_file: "{{ wowza_config_directory }}/Server.license"
+
 wowza_config_server: "{{ wowza_config_directory }}/Server.xml"
 wowza_config_vhost: "{{ wowza_config_directory }}/VHost.xml"
 wowza_config_vhosts: "{{ wowza_config_directory }}/VHosts.xml"
@@ -81,12 +82,15 @@ wowza_config_jmxremote_password: "{{ wowza_config_directory }}/jmxremote.passwor
 wowza_config_log4j: "{{ wowza_config_directory }}/log4j.properties"
 wowza_config_log4j2: "{{ wowza_config_directory }}/log4j2-config.xml"
 wowza_config_log: "{{ wowza_config_log4j2 if wowza_version is version('4.8.6', '>=') else wowza_config_log4j }}"
+
 wowza_manager_config_log4j: "{{ wowza_manager_config_directory }}/log4j.properties"
 wowza_manager_config_log4j2: "{{ wowza_manager_config_directory }}/log4j2-config.xml"
-wowza_manager_config_log: "{{ wowza_manager_config_log4j2 if wowza_version is version('4.8.6', '>=') else wowza_manager_config_log4j }}"
+wowza_manager_config_log: "{{ wowza_manager_config_log4j2 if wowza_version is version('4.8.6', '>=')
+                              else wowza_manager_config_log4j }}"
 wowza_manager_config_tomcat_log4j: "{{ wowza_manager_config_directory }}/tomcat-log4j.properties"
 wowza_manager_config_winstone_log4j: "{{ wowza_manager_config_directory }}/winstone-log4j.properties"
-wowza_manager_config_servlet_log4j: "{{ wowza_manager_config_tomcat_log4j if wowza_version is version('4.7.8', '>=') else wowza_manager_config_winstone_log4j }}"
+wowza_manager_config_servlet_log4j: "{{ wowza_manager_config_tomcat_log4j if wowza_version is version('4.7.8', '>=')
+                                        else wowza_manager_config_winstone_log4j }}"
 
 wowza_config_files:
   - "{{ wowza_config_server }}"

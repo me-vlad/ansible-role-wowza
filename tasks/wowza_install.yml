@@ -19,7 +19,7 @@
     name: expect
     state: present
 
-- name: WOWZA | Create expect script on the server
+- name: WOWZA | Create expect script for WSE install
   template:
     src: "{{ wowza_install_script }}.j2"
     dest: "{{ wowza_install_workdir }}/{{ wowza_install_script }}"
@@ -47,7 +47,7 @@
     - wowza_expect_output.stdout | length > 0
     - wowza_expect_output.stdout.find("Setup has finished installing Wowza Streaming Engine on your computer.") != -1
 
-- name: WOWZA | Remove expect script and installer from server
+- name: WOWZA | Remove expect script and installer
   file:
     name: "{{ item }}"
     state: absent
