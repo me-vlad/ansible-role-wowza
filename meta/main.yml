@@ -22,14 +22,16 @@ galaxy_info:
         - 8
     - name: Fedora
       versions:
-        - all
+        - 33
+        - 34
+        - 35
     - name: Ubuntu
       versions:
         - trusty
         - xenial
         - bionic
         - focal
-        - groovy
+        - hirsute
 
   galaxy_tags:
     - linux
