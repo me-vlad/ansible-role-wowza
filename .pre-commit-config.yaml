@@ -10,7 +10,7 @@ repos:
         args: [--markdown-linebreak-ext=md]
 
   - repo: https://github.com/ansible/ansible-lint
-    rev: v5.2.1
+    rev: v5.3.1
     hooks:
       - id: ansible-lint
         files: \.ya?ml$
