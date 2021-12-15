@@ -27,7 +27,7 @@ wowza_default_install: no
 wowza_version: "4.8.16+1"
 wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-{{ wowza_version | regex_replace('\\.', '-') }}/"
 wowza_installer: "WowzaStreamingEngine-{{ wowza_version }}-linux-x64-installer.run"
-wowza_installer_checksum: "sha1:ded371f3fb745a337cef2a48ad4407a5fb072adc"
+wowza_installer_checksum: "sha1:2a61dab859f284ea4acab97320327506f011b473"
 
 # Must be located on the file system with exec mount option!!!
 wowza_install_workdir: "/root"
