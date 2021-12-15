@@ -95,6 +95,8 @@ wowza_config_secret_files:
   - "{{ wowza_config_jmxremote_password }}"
   - "{{ wowza_config_mediacache }}"
 
+wowza_updatelog4j2_directory: "{{ wowza_install_workdir }}/updatelog4j2"
+
 # Wowza Vhost config
 wowza_streaming_ip: '*'
 wowza_streaming_port: ['1935']

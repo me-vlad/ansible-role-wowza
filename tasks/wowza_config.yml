@@ -183,3 +183,58 @@
     group: root
   loop: "{{ wowza_systemd_service_files }}"
   when: ansible_facts['service_mgr'] == 'systemd'
+
+
+- name: WOWZA | Log4j2 security update (CVE-2021-44228, CVE-2021-45046)
+  block:
+
+    - name: WOWZA | Create Log4j2 updater directory
+      file:
+        path: "{{ wowza_updatelog4j2_directory }}"
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: WOWZA | Get Log4j2 updater archive
+      unarchive:
+        src: "https://www.wowza.com/downloads/log4jupdater/updatelog4j.zip"
+        dest: "{{ wowza_updatelog4j2_directory }}"
+        exclude:
+          - updatelog4j.bat
+          - "windows/*"
+        remote_src: true
+        owner: root
+        group: root
+
+    - name: WOWZA | Ensure zip and unzip packages installed
+      package:
+        name: "{{ wowza_zip_packages }}"
+        state: present
+      vars:
+        wowza_zip_packages:
+          - zip
+          - unzip
+
+    - name: WOWZA | Ensure Wowza services not running
+      service:
+        name: "{{ item }}"
+        state: stopped
+      loop:
+        - "WowzaStreamingEngine"
+        - "WowzaStreamingEngineManager"
+
+    - name: WOWZA | Run Log4j2 updater script
+      command:
+        chdir: "{{ wowza_updatelog4j2_directory }}"
+        cmd: './updatelog4j.sh'
+      notify:
+        - 'WOWZA | restart WSE'
+        - 'WOWZA | restart WSE Manager'
+
+    - name: WOWZA | Remove Log4j2 updater directory and files
+      file:
+        path: "{{ wowza_updatelog4j2_directory }}"
+        state: absent
+
+  when: wowza_version is version('4.8.6', '>=')
