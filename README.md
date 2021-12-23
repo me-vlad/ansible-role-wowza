@@ -24,10 +24,10 @@ Also set wowza_admin_user and wowza_admin_password variables.
 # Just install WSE without any tweaks and configuration changes
 wowza_default_install: no
 
-wowza_version: "4.8.16+1"
+wowza_version: "4.8.17+1"
 wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-{{ wowza_version | regex_replace('\\.', '-') }}/"
 wowza_installer: "WowzaStreamingEngine-{{ wowza_version }}-linux-x64-installer.run"
-wowza_installer_checksum: "sha1:2a61dab859f284ea4acab97320327506f011b473"
+wowza_installer_checksum: "sha1:11faeb8f26687d93b0e0b2cb25f0673e8e156c18"
 
 # Must be located on the file system with exec mount option!!!
 wowza_install_workdir: "/root"
@@ -115,6 +115,8 @@ wowza_config_secret_files:
   - "{{ wowza_config_jmxremote_access }}"
   - "{{ wowza_config_jmxremote_password }}"
   - "{{ wowza_config_mediacache }}"
+
+wowza_updatelog4j2_directory: "{{ wowza_install_workdir }}/updatelog4j2"
 
 # Wowza Vhost config
 wowza_streaming_ip: '*'
