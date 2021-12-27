@@ -184,8 +184,13 @@
   loop: "{{ wowza_systemd_service_files }}"
   when: ansible_facts['service_mgr'] == 'systemd'
 
+- name: WOWZA | Check latest Log4j2 jar version
+  stat:
+    path: "{{ wowza_lib_directory }}/log4j-core-{{ wowza_log4j2_version }}.jar"
+    get_checksum: false
+  register: wowza_log4j2_jar
 
-- name: WOWZA | Log4j2 security update (CVE-2021-44228, CVE-2021-45046)
+- name: WOWZA | Log4j2 security update (CVE-2021-44228, CVE-2021-45046, CVE-2021-45105)
   block:
 
     - name: WOWZA | Create Log4j2 updater directory
@@ -198,10 +203,11 @@
 
     - name: WOWZA | Get Log4j2 updater archive
       unarchive:
-        src: "https://www.wowza.com/downloads/log4jupdater/updatelog4j.zip"
+        src: "{{ wowza_updatelog4j2_url }}"
         dest: "{{ wowza_updatelog4j2_directory }}"
         exclude:
           - updatelog4j.bat
+          - "osx/*"
           - "windows/*"
         remote_src: true
         owner: root
@@ -237,4 +243,6 @@
         path: "{{ wowza_updatelog4j2_directory }}"
         state: absent
 
-  when: wowza_version is version('4.8.6', '>=')
+  when:
+    - wowza_version is version('4.8.6', '>=')
+    - not wowza_log4j2_jar.stat.exists | bool

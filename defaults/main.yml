@@ -96,6 +96,8 @@ wowza_config_secret_files:
   - "{{ wowza_config_mediacache }}"
 
 wowza_updatelog4j2_directory: "{{ wowza_install_workdir }}/updatelog4j2"
+wowza_updatelog4j2_url: "https://www.wowza.com/downloads/log4jupdater/updatelog4j.zip"
+wowza_log4j2_version: '2.17.0'
 
 # Wowza Vhost config
 wowza_streaming_ip: '*'
