@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: wowza
+  namespace: me_vlad
   author: Vlad V. Teteria
   company: Server Labs
   description: Wowza Streaming Engine setup

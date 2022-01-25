@@ -190,7 +190,7 @@
     get_checksum: false
   register: wowza_log4j2_jar
 
-- name: WOWZA | Log4j2 security update (CVE-2021-44228, CVE-2021-45046, CVE-2021-45105)
+- name: WOWZA | Log4j2 security update (CVE-2021-44228, CVE-2021-45046, CVE-2021-45105, CVE-2021-48832)
   block:
 
     - name: WOWZA | Create Log4j2 updater directory

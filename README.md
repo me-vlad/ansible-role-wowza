@@ -58,6 +58,7 @@ wowza_manager_directory: "{{ wowza_directory }}/manager"
 wowza_manager_config_directory: "{{ wowza_manager_directory }}/conf"
 wowza_applications_directory: "{{ wowza_directory }}/applications"
 wowza_lib_directory: "{{ wowza_directory }}/lib"
+wowza_updates_directory: "{{ wowza_directory }}/updates"
 wowza_log_directory: "/var/log/wowza"
 wowza_systemd_include_dir: "/etc/systemd/system/WowzaStreamingEngine.service.d"
 wowza_systemd_service_files:
@@ -116,9 +117,9 @@ wowza_config_secret_files:
   - "{{ wowza_config_jmxremote_password }}"
   - "{{ wowza_config_mediacache }}"
 
-wowza_updatelog4j2_directory: "{{ wowza_install_workdir }}/updatelog4j2"
+wowza_updatelog4j2_directory: "{{ wowza_updates_directory }}/updatelog4j2"
 wowza_updatelog4j2_url: "https://www.wowza.com/downloads/log4jupdater/updatelog4j.zip"
-wowza_log4j2_version: '2.17.0'
+wowza_log4j2_version: '2.17.1'
 
 # Wowza Vhost config
 wowza_streaming_ip: '*'
