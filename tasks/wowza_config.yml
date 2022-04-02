@@ -230,7 +230,7 @@
         - "WowzaStreamingEngine"
         - "WowzaStreamingEngineManager"
 
-    - name: WOWZA | Run Log4j2 updater script
+    - name: WOWZA | Run Log4j2 updater script  # noqa no-changed-when 301
       command:
         chdir: "{{ wowza_updatelog4j2_directory }}"
         cmd: './updatelog4j.sh'
@@ -245,4 +245,5 @@
 
   when:
     - wowza_version is version('4.8.6', '>=')
+    - wowza_version is version('4.8.18', '<')
     - not wowza_log4j2_jar.stat.exists | bool

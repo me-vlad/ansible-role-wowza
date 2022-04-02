@@ -3,10 +3,10 @@
 # Just install WSE without any tweaks and configuration changes
 wowza_default_install: false
 
-wowza_version: "4.8.17+1"
+wowza_version: "4.8.18+1"
 wowza_download_path: "https://www.wowza.com/downloads/WowzaStreamingEngine-{{ wowza_version | regex_replace('\\.', '-') }}/"
 wowza_installer: "WowzaStreamingEngine-{{ wowza_version }}-linux-x64-installer.run"
-wowza_installer_checksum: "sha1:11faeb8f26687d93b0e0b2cb25f0673e8e156c18"
+wowza_installer_checksum: "sha1:573a7bf7e8239ef143f67f073ba3ec288f473b7a"
 
 # Must be located on the file system with exec mount option!!!
 wowza_install_workdir: "/root"
